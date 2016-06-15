@@ -208,7 +208,15 @@ void CDYVirtualKeyBoardFrameWnd::Notify(TNotifyUI& msg)
 			}
 		}
 	}
+	else if (msg.sType==DUI_MSGTYPE_CLICK)
+	{
+		if (strName==_T("ui_btn_hide"))
+		{
+			ShowWindow(FALSE);
+		}
 
+
+	}
 	__super::Notify(msg);
 }
 

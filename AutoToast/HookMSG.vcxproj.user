@@ -4,6 +4,6 @@
     <LocalDebuggerAttach>false</LocalDebuggerAttach>
     <LocalDebuggerDebuggerType>NativeOnly</LocalDebuggerDebuggerType>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(solutiondir)Debug\UpgradeSystem.exe</LocalDebuggerCommand>
+    <LocalDebuggerCommand>$(solutiondir)bin\virtualkeyboard_d.exe</LocalDebuggerCommand>
   </PropertyGroup>
 </Project>

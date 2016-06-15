@@ -9,10 +9,8 @@
             <VerticalLayout height="20" inset="10,4,0,0">
                 <Label text="虚拟键盘" textcolor="#00FFFFFF" disabledtextcolor="#FFA7A6AA" font="0" align="center" valign="center" />
             </VerticalLayout>
-            <HorizontalLayout width="66" height="20">
-                <Button name="minbtn" width="32" height="19" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" valign="center" normalimage="file=&apos;title_min.png&apos; dest=&apos;0,0,32,20&apos; source=&apos;0,0,32,20&apos;" hotimage="file=&apos;title_min.png&apos; dest=&apos;0,0,32,20&apos; source=&apos;32,0,64,20&apos;" pushedimage="file=&apos;title_min.png&apos; dest=&apos;0,0,32,20&apos; source=&apos;64,0,96,20&apos;" />
-                <Button name="restorebtn" visible="false" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" valign="center" normalimage="file=&apos;title_restore.png&apos; dest=&apos;0,0,32,20&apos; source=&apos;0,0,32,20&apos;" hotimage="file=&apos;title_restore.png&apos; dest=&apos;0,0,32,20&apos; source=&apos;32,0,64,20&apos;" pushedimage="file=&apos;title_restore.png&apos; dest=&apos;0,0,32,20&apos; source=&apos;64,0,96,20&apos;" />
-                <Button name="closebtn" width="32" height="21" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" valign="center" normalimage="file=&apos;title_close.png&apos; dest=&apos;0,0,32,20&apos; source=&apos;0,0,32,20&apos;" hotimage="file=&apos;title_close.png&apos; dest=&apos;0,0,32,20&apos; source=&apos;32,0,64,20&apos;" pushedimage="file=&apos;title_close.png&apos; dest=&apos;0,0,32,20&apos; source=&apos;64,0,96,20&apos;" />
+            <HorizontalLayout width="32" height="21">
+                <Button name="ui_btn_hide" width="32" height="21" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" valign="center" normalimage="file=&apos;title_close.png&apos; dest=&apos;0,0,32,20&apos; source=&apos;0,0,32,20&apos;" hotimage="file=&apos;title_close.png&apos; dest=&apos;0,0,32,20&apos; source=&apos;32,0,64,20&apos;" pushedimage="file=&apos;title_close.png&apos; dest=&apos;0,0,32,20&apos; source=&apos;64,0,96,20&apos;" />
             </HorizontalLayout>
         </HorizontalLayout>
         <VerticalLayout>

@@ -48,8 +48,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 						::ShowWindow(hwnd, SW_RESTORE); //还原最小化的窗口
 					}
 
-					::ShowWindow(hwnd, SW_SHOW);
-					::SetForegroundWindow(hwnd);
+					::ShowWindow(hwnd, SW_SHOWNA);
+					//::SetForegroundWindow(hwnd);
 					return 0;
 				}
 
@@ -73,7 +73,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 	//	CPaintManagerUI::ReloadSkin();
 	pFrame = new CDYVirtualKeyBoardFrameWnd();
 	//pFrame->Create(NULL, kszWindowClassName, UI_WNDSTYLE_FRAME, WS_EX_WINDOWEDGE | WS_EX_TOPMOST | WS_EX_NOACTIVATE);
-	pFrame->Create(NULL, kszWindowClassName, UI_WNDSTYLE_FRAME, WS_EX_WINDOWEDGE | WS_EX_TOPMOST | WS_EX_NOACTIVATE);
+	pFrame->Create(NULL, kszWindowClassName, UI_WNDSTYLE_FRAME, WS_EX_TOPMOST |WS_EX_TOOLWINDOW| WS_EX_NOACTIVATE);
 	pFrame->CenterWindow();
 	pFrame->ShowModal();
 	::OleUninitialize();

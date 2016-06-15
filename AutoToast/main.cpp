@@ -3,26 +3,43 @@
 #include"resource.h"
 #include <string.h>
 #include <tchar.h>
+#include <thread> 
 
-HMODULE g_hModule;
+//给共享段起的名字不能超过8个字符，否则会被截断
+#pragma data_seg("GlobleValue")
+//共享数据 ，再这个段之间的数据都可以被所有加载这个dll的进程共享
 HHOOK hhkCBT = NULL;
-HHOOK hhkGetMessage = NULL;
 HHOOK hhkShell = NULL;
-HHOOK hhkLowLevelMouseProc = NULL;
-TCHAR*  kszWindowClassName = _T("SuperVirtualKeyBoard");
-HWND hTFirstForm = NULL;
-DWORD dLastTickCount = 0;
+HHOOK hhkLowLevelMouse = NULL;
+HHOOK hhkKeyBoard = NULL;
+HMODULE g_hModule = NULL;
+int nDLLLoadCount = 0;
+int nDLLUnLoadCount = 100;
+BOOL isFristLoad = FALSE;
+#pragma data_seg()   
 
-void StartHook();
-void EndHook();
+#pragma comment(linker,"/SECTION:GlobleValue,RWS")    //告诉链接器，shared段是可读可写并且是共享的 
+
+
+
+
+
+TCHAR*  kszWindowClassName = _T("SuperVirtualKeyBoard");
+
+
+
 LRESULT CALLBACK HookCBRProc(int nCode, WPARAM wParam, LPARAM lParam);
-LRESULT CALLBACK HookGetMessageProc(int nCode, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK HookShellProc(int nCode, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK HookLowLevelMouseProc(int nCode, WPARAM wParam, LPARAM lParam);
-
+LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
 
 BOOL CALLBACK DlgProc(HWND, UINT, WPARAM, LPARAM);
 void ShowVirtualBoard();
+
+
+__declspec(dllexport)  void StartHook();
+__declspec(dllexport)  void EndHook();
+
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
 {
@@ -30,19 +47,24 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 	{
 	case DLL_PROCESS_ATTACH:
 	{
-		g_hModule = hModule;
-		StartHook();
+
+		if (!isFristLoad)
+		{
+			g_hModule = hModule;
+			StartHook();
+		}
+
 		break;
 	}
 	case DLL_PROCESS_DETACH:
 	{
-		EndHook();
-		HWND hwnd = ::FindWindow(kszWindowClassName, NULL);
-		if (hwnd != NULL)
+		--nDLLUnLoadCount;
+		--nDLLLoadCount;
+		if (nDLLLoadCount==0)
 		{
-			PostMessage(hwnd, WM_QUIT, 0, 0);
+			EndHook();
 		}
-
+		
 		break;
 	}
 	case DLL_THREAD_ATTACH:
@@ -54,27 +76,40 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 
 void StartHook()
 {
-//	hhkShell = SetWindowsHookEx(WH_SHELL, HookShellProc, g_hModule, GetCurrentThreadId());
-
-//	hhkGetMessage = SetWindowsHookEx(WH_GETMESSAGE, HookGetMessageProc, g_hModule, GetCurrentThreadId());
-
-	hhkLowLevelMouseProc = SetWindowsHookEx(WH_MOUSE_LL, HookLowLevelMouseProc, g_hModule, 0);
-
+	
+	//hhkShell = SetWindowsHookEx(WH_SHELL, HookShellProc, g_hModule, GetCurrentThreadId());
 	//if (hhkShell == NULL)
 	//{
-	//	::MessageBox(0, _T("Error hook WH_SHELL !"), _T("DLL"), MB_OK);
-	//}
-	//if (hhkGetMessage == NULL)
-	//{
-	//	::MessageBox(0, _T("Error hook WH_GETMESSAGE !"), _T("DLL"), MB_OK);
+	//	::MessageBox(0, _T("Error hook WH_SHELL !"), _T("Error"), MB_OK);
 	//}
 
-	if (hhkLowLevelMouseProc == NULL)
+	++nDLLLoadCount;
+
+	if (hhkLowLevelMouse == NULL)
 	{
-		::MessageBox(0, _T("Error hook WH_MOUSE_LL !"), _T("DLL"), MB_OK);
+		hhkLowLevelMouse = SetWindowsHookEx(WH_MOUSE_LL, HookLowLevelMouseProc, g_hModule, 0);
+		if (hhkLowLevelMouse == NULL)
+		{
+			::MessageBox(0, _T("Error hook WH_MOUSE_LL !"), _T("Error"), MB_OK);
+		}
+
 	}
 
+	/*
+	// 设置全局键盘钩子
+
+	if (hhkKeyBoard == NULL)
+	{
+		hhkKeyBoard = SetWindowsHookEx(WH_KEYBOARD, (HOOKPROC)KeyboardProc, g_hModule, 0);
+		if (hhkKeyBoard == NULL)
+		{
+			DWORD dwErrorCode = GetLastError();
+			::MessageBox(0, _T("Error hook WH_KEYBOARD !"), _T("Error"), MB_OK);
+		}
+	}
+	*/
 }
+
 BOOL IncreasePriority(DWORD dwPriorityClass, int nPriority)
 {
 
@@ -93,6 +128,8 @@ BOOL IncreasePriority(DWORD dwPriorityClass, int nPriority)
 
 void EndHook()
 {
+
+
 	BOOL isUnHooked = TRUE;
 	DWORD dLastErr = 0;
 
@@ -103,83 +140,35 @@ void EndHook()
 		if (!UnhookWindowsHookEx(hhkShell))
 		{
 			dLastErr = GetLastError();
-			::MessageBox(0, _T("Error unhook WH_SHELL !"), _T("DLL"), MB_OK);
+			::MessageBox(0, _T("Error unhook WH_SHELL !"), _T("Error"), MB_OK);
 		}
+		hhkShell = NULL;
 	}
 
-	if (hhkGetMessage)
+	if (hhkLowLevelMouse)
 	{
 		SetLastError(0);
-		if (!UnhookWindowsHookEx(hhkGetMessage))
+		if (!UnhookWindowsHookEx(hhkLowLevelMouse))
 		{
 			dLastErr = GetLastError();
-			::MessageBox(0, _T("Error unhook WH_GETMESSAGE !"), _T("DLL"), MB_OK);
+			::MessageBox(0, _T("Error unhook WH_MOUSE_LL !"), _T("Error"), MB_OK);
 		}
 
+		hhkLowLevelMouse = NULL;
 	}
 
-	SetLastError(0);
-
-	if (hhkLowLevelMouseProc)
+	if (hhkKeyBoard)
 	{
-		if (!UnhookWindowsHookEx(hhkLowLevelMouseProc))
+		SetLastError(0);
+		if (!UnhookWindowsHookEx(hhkKeyBoard))
 		{
 			dLastErr = GetLastError();
-			::MessageBox(0, _T("Error unhook WH_MOUSE_LL !"), _T("DLL"), MB_OK);
+			::MessageBox(0, _T("Error unhook WH_KEYBOARD!"), _T("Error"), MB_OK);
 		}
 
+		hhkKeyBoard = NULL;
 	}
 
-}
-
-HWND GetSomeHandle()
-{
-	BOOL result;
-
-	result = ((GetTickCount() - dLastTickCount) > 0x3A98);
-
-	if (!hTFirstForm || result)
-	{
-		dLastTickCount = GetTickCount();
-		hTFirstForm = FindWindow(_T("TFirstForm"), _T("CKeyboardFirstForm"));
-	}
-
-	return hTFirstForm;
-}
-
-
-LRESULT CALLBACK HookGetMessageProc(int nCode, WPARAM wParam, LPARAM lParam)
-{
-	HWND hwnd = NULL;
-
-	if (!nCode)
-	{
-
-		PMSG pMsg = (PMSG)lParam;
-		switch (pMsg->message)
-		{
-
-		case WM_INPUTLANGCHANGEREQUEST:
-			hwnd = GetSomeHandle();
-			if (hwnd)
-				PostMessage(hwnd, 0x496u, lParam, pMsg->lParam);
-			break;
-		case 0x0497:
-			if (pMsg->lParam == 1514874)
-			{
-				ActivateKeyboardLayout((HKL)pMsg->wParam, 0);
-				hwnd = GetSomeHandle();
-				if (hwnd)
-					PostMessage(hwnd, 0x498u, 0, 0);
-			}
-			break;
-		case 0x4BA:
-			hwnd = 0;
-			break;
-		}
-	}
-
-	return CallNextHookEx(hhkGetMessage, nCode, wParam, lParam);
 }
 
 
@@ -190,19 +179,13 @@ LRESULT CALLBACK HookShellProc(int nCode, WPARAM wParam, LPARAM lParam)
 	switch (nCode)
 	{
 	case HSHELL_WINDOWACTIVATED:
-		hwnd = GetSomeHandle();
-		if (hwnd)
-			PostMessage(hwnd, 0x4A1u, wParam, lParam);
+
 		break;
 	case HSHELL_LANGUAGE:
-		hwnd = GetSomeHandle();
-		if (hwnd)
-			PostMessage(hwnd, 0x496u, wParam, lParam);
+
 		break;
 	case HSHELL_WINDOWREPLACED:
-		hwnd = GetSomeHandle();
-		if (hwnd)
-			PostMessage(hwnd, 0x4A1u, lParam, 0);
+
 		break;
 	}
 	return CallNextHookEx(hhkShell, nCode, wParam, lParam);
@@ -219,6 +202,7 @@ LRESULT CALLBACK HookLowLevelMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
 
 		if ((wParam == WM_LBUTTONDOWN) || (wParam == WM_LBUTTONUP) || (wParam == WM_RBUTTONDOWN) || (wParam == WM_RBUTTONUP))
 		{
+			
 
 			switch (wParam)
 			{
@@ -226,6 +210,7 @@ LRESULT CALLBACK HookLowLevelMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
 				ShowVirtualBoard();
 				break;
 			case WM_LBUTTONUP:
+				
 				break;
 			case WM_RBUTTONDOWN:
 				break;
@@ -239,7 +224,7 @@ LRESULT CALLBACK HookLowLevelMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
 
 	}
 
-	return	CallNextHookEx(hhkLowLevelMouseProc, nCode, wParam, lParam);
+	return	CallNextHookEx(hhkLowLevelMouse, nCode, wParam, lParam);
 
 }
 
@@ -271,10 +256,12 @@ void ShowVirtualBoard()
 					{
 						if (::IsIconic(hVirtualKeyBoard))
 						{
-							::ShowWindow(hVirtualKeyBoard, SW_RESTORE); //还原最小化的窗口
+							//Sets the show state of a window without waiting for the operation to complete.
+							//::ShowWindowAsync(hVirtualKeyBoard, SW_RESTORE);
 						}
 
-						::ShowWindow(hVirtualKeyBoard, SW_SHOW);
+						//SetFocus(guiThreadInfo.hwndCaret);
+						::ShowWindow(hVirtualKeyBoard, SW_SHOWNA);
 
 						POINT point;//光标位置 
 						point.x = guiThreadInfo.rcCaret.left;
@@ -286,7 +273,7 @@ void ShowVirtualBoard()
 				}
 				else
 				{
-					ShellExecute(NULL, _T("open"), _T("virtualkeyboard.exe"), NULL, NULL, SW_SHOWNORMAL);
+					//ShellExecute(NULL, _T("open"), _T("virtualkeyboard.exe"), NULL, NULL, SW_SHOWNORMAL);
 				}
 
 			}
@@ -295,13 +282,14 @@ void ShowVirtualBoard()
 
 				if (hVirtualKeyBoard != NULL)
 				{
-
-					if (IsWindow(hVirtualKeyBoard))
+					if (guiThreadInfo.hwndActive != hVirtualKeyBoard)
 					{
+						if (IsWindow(hVirtualKeyBoard))
+						{
+							::ShowWindow(hVirtualKeyBoard, SW_HIDE);
+							//::ShowWindow(hVirtualKeyBoard, SW_MINIMIZE); //最小化的窗口
 
-						//::ShowWindow(hVirtualKeyBoard, SW_HIDE);
-						::ShowWindow(hVirtualKeyBoard, SW_MINIMIZE); //最小化的窗口
-
+						}
 					}
 
 				}
@@ -350,6 +338,27 @@ LRESULT CALLBACK HookCBRProc(int nCode, WPARAM wParam, LPARAM lParam)
 	//在钩子子程中调用得到控制权的钩子函数在完成对消息的处理后，如果想要该消息继续传递，那么它必须调用另外一个 SDK中的API函数CallNextHookEx来传递它，以执行钩子链表所指的下一个钩子子程。这个函数成功时返回钩子链中下一个钩子过程的返回值， 返回值的类型依赖于钩子的类型
 	return CallNextHookEx(hhkCBT, nCode, wParam, lParam);
 }
+
+
+// 键盘钩子消息处理过程
+LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
+{
+
+	TCHAR szBuf[128];
+	// 最高位为0(lParam>0)，表示VM_KEYDOWN消息
+	if ((nCode == HC_ACTION) && (lParam > 0))
+	{
+		WCHAR KeyName[10] = { 0 };
+		GetKeyNameText((LONG)lParam, KeyName, 50);
+
+		swprintf_s(szBuf, _T("KeyName:%s load:%d unload:%d"), KeyName, nDLLLoadCount, 100 - nDLLUnLoadCount);
+		MessageBox(NULL, szBuf, L"全局键盘钩子", MB_OK);
+	}
+
+	// 继续传递消息
+	return CallNextHookEx(hhkKeyBoard, nCode, wParam, lParam);
+}
+
 
 
 BOOL CALLBACK DlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
