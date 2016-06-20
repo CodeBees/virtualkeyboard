@@ -460,7 +460,6 @@ namespace DuiLib
 	{
 		if (st == ScrollType::EVSCROLL)
 		{
-		
 
 			if (bAddScroll && !m_pVerticalScrollBar)
 			{
@@ -486,18 +485,18 @@ namespace DuiLib
 		{
 
 			if (bAddScroll && !m_pHorizontalScrollBar) {
-				//m_pHorizontalScrollBar = new CScrollBarUI;
-				//m_pHorizontalScrollBar->SetHorizontal(true);
-				//m_pHorizontalScrollBar->SetOwner(this);
-				//m_pHorizontalScrollBar->SetManager(m_pManager, NULL, false);
-				////m_pHorizontalScrollBar->SetVisible(false);    // 这里添加
+				m_pHorizontalScrollBar = new CScrollBarUI;
+				m_pHorizontalScrollBar->SetHorizontal(true);
+				m_pHorizontalScrollBar->SetOwner(this);
+				m_pHorizontalScrollBar->SetManager(m_pManager, NULL, false);
+				//m_pHorizontalScrollBar->SetVisible(false);    // 这里添加
 
-				//if (m_pManager) {
-				//	LPCTSTR pDefaultAttributes = m_pManager->GetDefaultAttributeList(_T("HScrollBar"));
-				//	if (pDefaultAttributes) {
-				//		m_pHorizontalScrollBar->ApplyAttributeList(pDefaultAttributes);
-				//	}
-				//}
+				if (m_pManager) {
+					LPCTSTR pDefaultAttributes = m_pManager->GetDefaultAttributeList(_T("HScrollBar"));
+					if (pDefaultAttributes) {
+						m_pHorizontalScrollBar->ApplyAttributeList(pDefaultAttributes);
+					}
+				}
 			}
 			else if (!bAddScroll && m_pHorizontalScrollBar) {
 				delete m_pHorizontalScrollBar;
@@ -555,16 +554,13 @@ namespace DuiLib
 		rc.right -= m_rcInset.right;
 		rc.bottom -= m_rcInset.bottom;
 
-		for( int it = 0; it < m_items.GetSize(); it++ )
-		{
+		for( int it = 0; it < m_items.GetSize(); it++ ) {
 			CControlUI* pControl = static_cast<CControlUI*>(m_items[it]);
 			if( !pControl->IsVisible() ) continue;
-			if( pControl->IsFloat() )
-			{
+			if( pControl->IsFloat() ) {
 				SetFloatPos(it);
 			}
-			else 
-			{
+			else {
 				pControl->SetPos(rc); // 所有非float子控件放大到整个客户区
 			}
 		}
@@ -592,8 +588,6 @@ namespace DuiLib
 		}
 		else if( _tcscmp(pstrName, _T("vscrollbarstyle")) == 0 )
 		{
-
-
 			EnableScrollBarEx(true, ScrollType::EVSCROLL);
 			if (GetVerticalScrollBar())
 			{
@@ -740,7 +734,6 @@ namespace DuiLib
 		}
 
 		if( m_pVerticalScrollBar != NULL && m_pVerticalScrollBar->IsVisible() ) {
-
 			if( ::IntersectRect(&rcTemp, &rcPaint, &m_pVerticalScrollBar->GetPos()) ) {
 				m_pVerticalScrollBar->DoPaint(hDC, rcPaint);
 			}

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -72,29 +72,29 @@
     <_ProjectFileVersion>11.0.61030.0</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)tmp\$(Configuration)</OutDir>
-    <IntDir>$(SolutionDir)tmp\$(Configuration)</IntDir>
+    <OutDir>$(solutiondir)Build\Release\</OutDir>
+    <IntDir>$(solutiondir)Build\Release\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>false</GenerateManifest>
     <EmbedManifest>false</EmbedManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)tmp\$(Configuration)</OutDir>
-    <IntDir>$(SolutionDir)tmp\$(Configuration)</IntDir>
+    <OutDir>$(solutiondir)Build\Debug\</OutDir>
+    <IntDir>$(solutiondir)Build\Debug\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>false</GenerateManifest>
     <EmbedManifest>false</EmbedManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'">
-    <OutDir>.\Build\Debug_u\</OutDir>
-    <IntDir>.\Build\Debug_u\</IntDir>
+    <OutDir>$(solutiondir)Build\Debug_u\</OutDir>
+    <IntDir>$(solutiondir)Build\Debug_u\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>false</GenerateManifest>
     <EmbedManifest>false</EmbedManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'">
-    <OutDir>.\Build\Release_u\</OutDir>
-    <IntDir>.\Build\Release_u\</IntDir>
+    <OutDir>$(solutiondir)Build\Release_u\</OutDir>
+    <IntDir>$(solutiondir)Build\Release_u\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>false</GenerateManifest>
     <EmbedManifest>false</EmbedManifest>
@@ -114,23 +114,23 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;UILIB_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderOutputFile>$(solutiondir)Build\Release\DuiLib.pch</PrecompiledHeaderOutputFile>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0406</Culture>
     </ResourceCompile>
     <Link>
-      <OutputFile>$(SolutionDir)DLL\DuiLib.dll</OutputFile>
+      <OutputFile>$(solutiondir)bin\DuiLib.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <BaseAddress>0x11000000</BaseAddress>
-      <ImportLibrary>$(SolutionDir)Lib\DuiLib.lib</ImportLibrary>
+      <ImportLibrary>$(solutiondir)Lib\DuiLib.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -154,7 +154,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>$(solutiondir)Build\Debug\DuiLib.pch</PrecompiledHeaderOutputFile>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -164,13 +164,13 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <OutputFile>$(SolutionDir)DLL\DuiLib_d.dll</OutputFile>
+      <OutputFile>$(solutiondir)bin\DuiLib_d.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>.\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
       <BaseAddress>0x11000000</BaseAddress>
-      <ImportLibrary>$(SolutionDir)Lib\DuiLib_d.lib</ImportLibrary>
+      <ImportLibrary>$(solutiondir)lib\DuiLib_d.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
       <SubSystem>Windows</SubSystem>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
@@ -197,7 +197,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>.\Build\Debug_u/DuiLib.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>$(solutiondir)Build\Debug_u\DuiLib.pch</PrecompiledHeaderOutputFile>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -207,15 +207,15 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <OutputFile>../bin/DuiLib_ud.dll</OutputFile>
+      <OutputFile>$(solutiondir)bin\DuiLib_ud.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
       <BaseAddress>0x11000000</BaseAddress>
-      <ImportLibrary>../Lib/DuiLib_ud.lib</ImportLibrary>
+      <ImportLibrary>$(solutiondir)Lib\DuiLib_ud.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>atlsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -238,7 +238,7 @@
       <StringPooling>true</StringPooling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\Build\Release_u/DuiLib.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>$(solutiondir)Build\Release_u\DuiLib.pch</PrecompiledHeaderOutputFile>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
@@ -247,13 +247,13 @@
       <Culture>0x0406</Culture>
     </ResourceCompile>
     <Link>
-      <OutputFile>../bin/DuiLib_u.dll</OutputFile>
+      <OutputFile>$(solutiondir)bin\DuiLib_u.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <BaseAddress>0x11000000</BaseAddress>
-      <ImportLibrary>../Lib/DuiLib_u.lib</ImportLibrary>
+      <ImportLibrary>$(solutiondir)Lib\DuiLib_u.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>atlsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -269,9 +269,9 @@
     <ClCompile Include="Control\UIMediaPlayer.cpp" />
     <ClCompile Include="StdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(solutiondir)Build\Debug\DuiLib.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(solutiondir)Build\Release\DuiLib.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnicodeDebug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='UnicodeRelease|Win32'">Create</PrecompiledHeader>
     </ClCompile>
@@ -332,6 +332,7 @@
     <ClInclude Include="UIlib.h" />
     <ClInclude Include="Utils\downloadmgr.h" />
     <ClInclude Include="Utils\FlashEventHandler.h" />
+    <ClInclude Include="Utils\stb_image.h" />
     <ClInclude Include="Utils\UIDelegate.h" />
     <ClInclude Include="Utils\UnCompression.h" />
     <ClInclude Include="Utils\Utils.h" />

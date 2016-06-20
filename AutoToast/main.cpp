@@ -286,7 +286,7 @@ void ShowVirtualBoard()
 					{
 						if (IsWindow(hVirtualKeyBoard))
 						{
-							::ShowWindow(hVirtualKeyBoard, SW_HIDE);
+							//::ShowWindow(hVirtualKeyBoard, SW_HIDE);
 							//::ShowWindow(hVirtualKeyBoard, SW_MINIMIZE); //最小化的窗口
 
 						}

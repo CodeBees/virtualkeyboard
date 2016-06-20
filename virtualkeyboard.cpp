@@ -6,8 +6,6 @@
 TCHAR*  kszWindowClassName = _T("SuperVirtualKeyBoard");
 
 
-
-
 BOOL SetWindowForeground(HWND hWnd)
 {
 	BOOL result = FALSE;
@@ -53,7 +51,6 @@ static ControlOptionID controlKeyOptionIDs[] =
 	{ _T("ui_btn_key_lwin"),NULL,VK_LWIN,TRUE },			//window
 };
 
-
 static NormalButtonID normalButtonIDs[] =
 {
 	{ _T("ui_btn_numpad0"),NULL,VK_NUMPAD0,FALSE },
@@ -66,6 +63,14 @@ static NormalButtonID normalButtonIDs[] =
 	{ _T("ui_btn_numpad7"),NULL,VK_NUMPAD7,FALSE },
 	{ _T("ui_btn_numpad8"),NULL,VK_NUMPAD8,FALSE },
 	{ _T("ui_btn_numpad9"),NULL,VK_NUMPAD9,FALSE },
+
+	{ _T("ui_btn_key_multiply"),NULL,VK_MULTIPLY,FALSE},
+	{ _T("ui_btn_key_add"),NULL,VK_ADD,FALSE},
+	{ _T("ui_btn_key_separator"),NULL,VK_SEPARATOR,FALSE},//Ð¡¼üÅÌ Enter
+	{ _T("ui_btn_key_subtract"),NULL,VK_SUBTRACT,FALSE},
+	{ _T("ui_btn_key_decimal"),NULL,VK_DECIMAL,FALSE},
+	{ _T("ui_btn_key_divide"),NULL,VK_DIVIDE,FALSE},
+
 	{ _T("ui_btn_key_1"),NULL,'1',FALSE },
 	{ _T("ui_btn_key_2"),NULL,'2',FALSE },
 	{ _T("ui_btn_key_3"),NULL,'3',FALSE },
@@ -118,8 +123,8 @@ static NormalButtonID normalButtonIDs[] =
 	{ _T("ui_btn_key_oem_5"),NULL,VK_OEM_5,FALSE },// '\|' for US
 	{ _T("ui_btn_key_oem_6"),NULL,VK_OEM_6,FALSE },// ']}' for US
 	{ _T("ui_btn_key_oem_7"),NULL,VK_OEM_7,FALSE },// ''"' for US
-
-	//{ _T(""),NULL,,FALSE },
+	{ _T("ui_btn_key_space"),NULL,VK_SPACE,FALSE },
+	
 	//{ _T(""),NULL,,FALSE },
 };
 
@@ -214,8 +219,6 @@ void CDYVirtualKeyBoardFrameWnd::Notify(TNotifyUI& msg)
 		{
 			ShowWindow(FALSE);
 		}
-
-
 	}
 	__super::Notify(msg);
 }

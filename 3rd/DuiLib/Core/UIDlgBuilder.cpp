@@ -267,8 +267,7 @@ namespace DuiLib {
 	{
 		IContainerUI* pContainer = NULL;
 		CControlUI* pReturn = NULL;
-		for( CMarkupNode node = pRoot->GetChild() ; node.IsValid(); node = node.GetSibling() ) 
-        {
+		for( CMarkupNode node = pRoot->GetChild() ; node.IsValid(); node = node.GetSibling() ) {
 			LPCTSTR pstrClass = node.GetName();
 			if( _tcscmp(pstrClass, _T("Image")) == 0 || _tcscmp(pstrClass, _T("Font")) == 0||_tcscmp(pstrClass, _T("String")) == 0 \
 				|| _tcscmp(pstrClass, _T("Default")) == 0 ) continue;
@@ -486,14 +485,12 @@ namespace DuiLib {
 					pControl->SetAttribute(node.GetAttributeName(i), node.GetAttributeValue(i));
 				}
 			}
-
 			if( pManager ) {
 				pControl->SetManager(NULL, NULL, false);
 			}
 			// Return first item
 			if( pReturn == NULL ) pReturn = pControl;
 		}
-
 		return pReturn;
 	}
 

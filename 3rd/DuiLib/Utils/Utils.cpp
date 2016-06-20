@@ -665,11 +665,6 @@ namespace DuiLib
 
 	int CDuiString::Compare(LPCTSTR lpsz) const 
 	{ 
-		if (m_pstr==nullptr)
-		{
-			return -1;
-		}
-
 		return _tcscmp(m_pstr, lpsz); 
 	}
 
