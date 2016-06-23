@@ -68,6 +68,9 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 			::MessageBox(NULL, _T("º”‘ÿDll ß∞‹£°"), _T("Ã· æ"), MB_OK);
 		}
 	}
+	//
+	SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
+	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
 
 	CDYVirtualKeyBoardFrameWnd *pFrame = NULL;
 	//	CPaintManagerUI::ReloadSkin();
@@ -80,3 +83,4 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
 	return 0;
 }
+
